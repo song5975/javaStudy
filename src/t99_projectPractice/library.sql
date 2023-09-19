@@ -33,7 +33,7 @@ CREATE TABLE members (
 desc members;
 
 INSERT INTO members
-VALUES (default, '홍길동', 'hong1111', '010-1111-1111', '서울'),
+VALUES (default, 'ADMIN', '1234', '010-1111-1111', '서울'),
        (default, '강감찬', 'kang2222', '010-2222-2222', '대전'),
        (default, '이순신', 'lee3333', '010-3333-3333', '청주');
 

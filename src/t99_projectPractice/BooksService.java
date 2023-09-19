@@ -1,5 +1,6 @@
 package t99_projectPractice;
 
+import java.sql.Connection;
 import java.util.Scanner;
 
 public class BooksService {
@@ -8,8 +9,8 @@ public class BooksService {
 	BooksDAO dao = new BooksDAO();
 	BooksVO vo = null;
 	
-	public BooksService(conn) {
-		// TODO Auto-generated constructor stub
+	public BooksService(Connection conn) {
+    	this.conn = conn;
 	}
 	
 	public void getBooksMenu() {
