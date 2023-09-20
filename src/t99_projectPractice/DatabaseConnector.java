@@ -10,23 +10,16 @@ public class DatabaseConnector {
     private static final String PASSWORD = "1234";
 
     public static Connection getConnection() {
-        Connection conn = null;
+    	Connection conn = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
+            
             conn = DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (ClassNotFoundException e) {
+			System.out.println("드라이버 검색 실패~~" + e.getMessage());
+		} catch (SQLException e) {
+			System.out.println("데이터베이스 연동 실패~~" + e.getMessage());
+		}
         return conn;
-    }
-
-    public static void closeConnection(Connection conn) {
-        if (conn != null) {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

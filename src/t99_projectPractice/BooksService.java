@@ -1,6 +1,5 @@
 package t99_projectPractice;
 
-import java.sql.Connection;
 import java.util.Scanner;
 
 public class BooksService {
@@ -8,10 +7,6 @@ public class BooksService {
 	
 	BooksDAO dao = new BooksDAO();
 	BooksVO vo = null;
-	
-	public BooksService(Connection conn) {
-    	this.conn = conn;
-	}
 	
 	public void getBooksMenu() {
 	        boolean run = true;
@@ -45,17 +40,14 @@ public class BooksService {
 	                    run = false;
 	            }
 	        }
-	        dao.connClose();
 	    }
 	    
 	private boolean isAdmin() {
-	    MembersDAO dao = new MembersDAO();    
-	    System.out.println("관리자 비밀번호를 입력하세요. ");
-	    String adminPassword = scanner.next();
 	    
-	    String actualAdminPassword = dao.getAdminPassword();
+	    System.out.println("2차 비밀번호를 입력하세요: ");
+	    String secondPassword = scanner.next();
 	    
-	    if (adminPassword.equals(actualAdminPassword)) {
+	    if ("1234".equals(secondPassword)) {
 	        System.out.println("관리자로 확인되셨습니다.");
 	        return true;
 	    } else {
@@ -65,7 +57,7 @@ public class BooksService {
 	}
 
 
-		private void registerBook() {
+		private void registerBook() { // 여기서 데이터베이스에 접근하려면 dao 호출
 	        // 도서 등록 로직
 		}
 	    

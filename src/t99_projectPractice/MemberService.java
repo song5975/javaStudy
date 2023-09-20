@@ -1,15 +1,10 @@
 package t99_projectPractice;
 
-import java.sql.Connection;
 import java.util.Scanner;
 
 public class MemberService {
     Scanner scanner = new Scanner(System.in);
     MembersDAO membersDAO = new MembersDAO();
-    
-    public MemberService(Connection conn) {
-    	this.conn = conn;
-    }
 
     public void getMemberMenu() {
         boolean run = true;
@@ -37,6 +32,17 @@ public class MemberService {
         }
     }
 
+    // LibraryRun에서 회원 아이디, 비밀번호를 받아서 확인하는 메소드.
+    public static int checkLogin(String userID, String password) {
+    	if (MembersDAO.isAdminID(userID) && MembersDAO.isAdminPassword(password)) {
+    	    return 1; // 관리자 로그인
+    	} else if (userID.equals(MembersDAO.ismemberID(userID)) && password.equals(MembersDAO.ismemberPassword(userID, password))) {
+    	    return 2; // 사용자 로그인
+    	} else {
+    	    return 0; // 잘못된 비밀번호 또는 아이디
+    	}
+    }
+    
     private void registerMember() {
         // 회원 가입 로직
     }
@@ -53,20 +59,4 @@ public class MemberService {
         // 회원 정보 삭제 로직
     }
 
-    // 관리자 비밀번호 확인 메서드
-    private boolean isAdmin() {
-        System.out.println("관리자 비밀번호를 입력하세요.");
-        String adminPassword = scanner.next();
-
-        // 실제 비밀번호를 데이터베이스에서 가져오는 로직
-        String actualAdminPassword = membersDAO.getAdminPassword();
-
-        if (adminPassword.equals(actualAdminPassword)) {
-            System.out.println("관리자로 확인되셨습니다.");
-            return true;
-        } else {
-            System.out.println("관리자 비밀번호가 일치하지 않습니다.");
-            return false;
-        }
-    }
 }
