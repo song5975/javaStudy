@@ -19,7 +19,9 @@ public class T02_BorderLayout extends JFrame {
 		setResizable(false);
 		
 		this.getContentPane().add(getBtnNorth(), BorderLayout.NORTH);
+		// getBtnNorth() 메서드에서 생성한 "북쪽" 레이블이 있는 버튼을 BorderLayout의 북쪽에 추가
 		this.getContentPane().add(getBtnSouth(), BorderLayout.SOUTH);
+		// this.getContentPane().add() ==> 해당 클래스의 컨텐트 팬에 추가
 		this.getContentPane().add(getBtnWest(), BorderLayout.WEST);
 		this.getContentPane().add(getBtnEast(), BorderLayout.EAST);
 		add(getBtnCenter(), BorderLayout.CENTER);

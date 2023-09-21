@@ -26,7 +26,7 @@ public class T02_BorderLayout2 extends JFrame {
 		this.getContentPane().add(getTxtSouth(), BorderLayout.SOUTH);
 		this.getContentPane().add(getBtnWest(), BorderLayout.WEST);
 		this.getContentPane().add(getBtnEast(), BorderLayout.EAST);
-		add(getBtnCenter(), BorderLayout.CENTER);
+		add(getBtnCenter(), BorderLayout.CENTER); // 생략이 가능하다.
 	}
 	
 	private JTextArea getBtnCenter() {

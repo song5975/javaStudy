@@ -22,7 +22,7 @@ public class T01_FlowLayout extends JFrame {
 		setLocationRelativeTo(null); // 프레임을 가운데 정렬하기
 		setResizable(false); // 프레임의 크기 고정
 		
-		setLayout(new FlowLayout());
+		setLayout(new FlowLayout()); // 버튼이 여러 개 있을 때 자동으로 배치
 		
 		add(getBtnOk());
 		add(getBtnExit());
