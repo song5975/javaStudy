@@ -5,7 +5,7 @@ import java.util.List;
 
 public class LoansService {
 
-	// 전체 대출 조회
+    // 접속자용 대출 조회
 	public List<LoansVO> showAllLoans(int memberID) {
         System.out.println("LoansService: name = " + memberID);
 
@@ -26,7 +26,18 @@ public class LoansService {
 		dao.removeLoans(loanID);
 		
 	}
-	
-	
+
+	// 대출 ID로 대출 정보 조회
+	public LoansVO getLoanByID(int loanID) {
+	    LoansDAO dao = new LoansDAO();
+	    return dao.getLoanByID(loanID);
+	}
+
+	// 관리자용 전체 대출 조회
+	public List<LoansVO> showAdminLoans() {
+	    LoansDAO dao = new LoansDAO();
+	    List<LoansVO> vos = dao.showAdminLoans();
+	    return vos;
+	}
 	
 }

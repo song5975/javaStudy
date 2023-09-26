@@ -16,9 +16,9 @@ public class DatabaseConnector {
             
             conn = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (ClassNotFoundException e) {
-			System.out.println("드라이버 검색 실패~~" + e.getMessage());
+			System.out.println("드라이버 검색 실패" + e.getMessage());
 		} catch (SQLException e) {
-			System.out.println("데이터베이스 연동 실패~~" + e.getMessage());
+			System.out.println("데이터베이스 연동 실패" + e.getMessage());
 		}
         return conn;
     }

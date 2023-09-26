@@ -42,7 +42,6 @@ public class MemberInput extends JFrame {
 		setSize(800, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
@@ -135,29 +134,21 @@ public class MemberInput extends JFrame {
 				String contact = textFieldNewPhoneNum.getText();
 				String address = textFieldNewAddress.getText();
 				
-				
+				// MemberService에서 유효성 검사
 				MemberService service = new MemberService();
-				// 회원가입하려는 정보 유효성 검사
 				boolean isValid = service.validationCheck(name, password, contact, address);
 				
-				// 유효성 검사가 통과한 경우에만 회원 추가 시도
 		        if (isValid) {
-		            // 회원 추가 시도
 		            boolean isAdded = service.addMember(name, password, contact, address);
 		            if (isAdded) {
-		                // 회원 추가 성공 메시지를 표시
 		                JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다.", "회원가입 성공", JOptionPane.INFORMATION_MESSAGE);
 		                dispose();
 		            } else {
-		                // 회원 추가 실패 메시지를 표시
 		                JOptionPane.showMessageDialog(null, "회원가입에 실패하였습니다. 중복된 아이디일 수 있습니다.", "회원가입 실패", JOptionPane.ERROR_MESSAGE);
 		            }
 		        } else {
-		            // 유효성 검사 실패 메시지를 표시
 		            JOptionPane.showMessageDialog(null, "입력 정보가 유효하지 않습니다.", "유효성 검사 실패", JOptionPane.ERROR_MESSAGE);
 		        }
-				
-				
 			}
 		});
 
@@ -166,11 +157,8 @@ public class MemberInput extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				
 			}
 		});
 		
-		
 	}
-
 }

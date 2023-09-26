@@ -8,12 +8,12 @@ import java.util.List;
 
 public class BooksDAO {
 
-    // BooksService getAllBooks에서 호출 받아 DB에서 모든 책 가져오기
+    // BooksService showAllBooks에서 호출 받아 DB에서 모든 책 가져오기
     public List<BooksVO> getAllBooks() {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        List<BooksVO> vos = new ArrayList<>(); // BooksVO 객체를 저장할 리스트
+        List<BooksVO> vos = new ArrayList<>();
 
         try {
             conn = DatabaseConnector.getConnection();
@@ -30,7 +30,7 @@ public class BooksDAO {
                 vo.setGenre(rs.getString("genre"));
                 vo.setAvailable(rs.getBoolean("isAvailable"));
 
-                vos.add(vo); // 가져온 도서 정보를 리스트에 추가
+                vos.add(vo);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,21 +49,25 @@ public class BooksDAO {
                 e.printStackTrace();
             }
         }
-
-        return vos; // 도서 정보를 담은 리스트를 반환
+        return vos;
     }
     
     // BooksService searchBooks에서 호출 받아 DB에서 개별 책 가져오기
     public List<BooksVO> searchBooks(String selectedColumn, String keyword) {
+    	
+    	System.out.println("searchButton_Debug :" + selectedColumn);
+		System.out.println("searchButton_Debug : " + keyword);
+    	
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        List<BooksVO> vos = new ArrayList<>(); // 검색 결과를 저장할 리스트
-
+        List<BooksVO> vos = new ArrayList<>();
+        
         try {
             conn = DatabaseConnector.getConnection();
 
-            String sql = "SELECT * FROM books WHERE `" + selectedColumn + "` LIKE ?";            pstmt = conn.prepareStatement(sql);
+            String sql = "SELECT * FROM books WHERE " + selectedColumn + " LIKE ?";            
+            pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, "%" + keyword + "%");
             rs = pstmt.executeQuery();
 
@@ -76,7 +80,7 @@ public class BooksDAO {
                 vo.setGenre(rs.getString("genre"));
                 vo.setAvailable(rs.getBoolean("isAvailable"));
 
-                vos.add(vo); // 검색 결과를 리스트에 추가
+                vos.add(vo);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,19 +99,24 @@ public class BooksDAO {
                 e.printStackTrace();
             }
         }
-
-        return vos; // 검색 결과를 담은 리스트를 반환
+        return vos;
     }
 
+    // 대출 가능 여부가 true인 책을 대출을 하면 false로 바꿔주는 메소드
     public void availableControl(int bookID, boolean isAvailable) {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
         try {
             conn = DatabaseConnector.getConnection();
-            String sql = "UPDATE books SET isAvailable = false WHERE bookID = ?";
+            String sql = "UPDATE books SET isAvailable = NOT ? WHERE bookID = ?";
             pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, bookID);
+            
+            System.out.println("availableControl_DAO_bookID_Debug:" + bookID);
+            System.out.println("availableControl_DAO_isAvailable_Debug:" + isAvailable);
+            
+            pstmt.setBoolean(1, isAvailable);
+            pstmt.setInt(2, bookID);
 
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {
@@ -131,4 +140,79 @@ public class BooksDAO {
         }
     }
 
+    // 도서 추가 메소드
+    public boolean addBook(BooksVO newBook) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DatabaseConnector.getConnection();
+            String sql = "INSERT INTO books (title, author, publisher, genre, isAvailable) VALUES (?, ?, ?, ?, ?)";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, newBook.getTitle());
+            pstmt.setString(2, newBook.getAuthor());
+            pstmt.setString(3, newBook.getPublisher());
+            pstmt.setString(4, newBook.getGenre());
+            pstmt.setBoolean(5, newBook.isAvailable());
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("도서가 성공적으로 추가되었습니다.");
+                return true;
+            } else {
+                System.out.println("도서 추가 중 오류가 발생했습니다.");
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+   
+    // 도서 삭제 메소드
+    public boolean deleteBook(int bookID) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DatabaseConnector.getConnection();
+            String sql = "DELETE FROM books WHERE bookID = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, bookID);
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("도서가 성공적으로 삭제되었습니다.");
+                return true;
+            } else {
+                System.out.println("도서 삭제 중 오류가 발생했습니다.");
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

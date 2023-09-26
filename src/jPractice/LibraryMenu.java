@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -16,7 +17,8 @@ public class LibraryMenu extends JFrame {
 
 	private JPanel contentPane;
 	private JButton btnForUsers, btnForAdmin, btnAccessorInfo;
-	private String name;
+	
+	private String name; // 현재 로그인한 사용자가 누구인지 확인하는 전역변수 name 
 
 //	public static void main(String[] args) {
 //		EventQueue.invokeLater(new Runnable() {
@@ -34,15 +36,13 @@ public class LibraryMenu extends JFrame {
 
 	public LibraryMenu(String name) {
 		this.name = name;
-        
-//		System.out.println("LibraryMenu: name = " + name);
+//		System.out.println("LibraryMenu_Debug: name = " + name);
 //		UserScreen userScreen = new UserScreen(name);
 		
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(800, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
@@ -90,7 +90,7 @@ public class LibraryMenu extends JFrame {
 		btnForUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-		        System.out.println("LibraryMenu: name = " + name);
+		        System.out.println("LibraryMenu_Debug: name = " + name);
 				UserScreen userScreen = new UserScreen(name);
 				userScreen.setVisible(true);
 			}
@@ -98,13 +98,20 @@ public class LibraryMenu extends JFrame {
 		
 		// 관리자용 버튼
 		btnForAdmin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-//				AdminScreen adminScreen = new AdminScreen();
-//				adminScreen.setVisible(true);
-			}
+		    public void actionPerformed(ActionEvent e) {
+		        String secondPassword = JOptionPane.showInputDialog("2차 비밀번호를 입력하세요:");
+
+		        if (secondPassword != null && secondPassword.equals("1234")) {
+		            AdminScreen adminScreen = new AdminScreen();
+		            adminScreen.setVisible(true);
+		        } else {
+		            JOptionPane.showMessageDialog(null, "2차 비밀번호가 일치하지 않습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+		        }
+		    }
 		});
 		
-		// 접속자용 버튼
+		// 접속자 버튼(삭제)
+		// 로그인 시에 사용자 이름을 객체로 계속 넘겨서 접속자를 확인가능하도록으로 수정함.
 		btnAccessorInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 //				AccessorScreen accessorScreen = new AccessorScreen();

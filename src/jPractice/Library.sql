@@ -12,6 +12,7 @@ CREATE TABLE books (
 
 desc books;
 
+/* 도서 테이블(books) - TestData */
 INSERT INTO books
 VALUES (default, '이것이 자바다', '신용권', '한빛미디어', '컴퓨터 공학', true),
        (default,'전설로 떠나는 월가의 영웅', '피터 린치', '국일증권경제연구소', '경제 경영', true),
@@ -19,7 +20,7 @@ VALUES (default, '이것이 자바다', '신용권', '한빛미디어', '컴퓨�
        
 select * from books;
 
-drop table books;
+--drop table books;
 
 /* 회원 테이블 */
 CREATE TABLE members (
@@ -32,6 +33,7 @@ CREATE TABLE members (
 
 desc members;
 
+/* 회원 테이블 - TestData */
 INSERT INTO members
 VALUES (default, 'ADMIN', '1234', '010-1111-1111', '서울'),
        (default, '강감찬', 'kang2222', '010-2222-2222', '대전'),
@@ -39,22 +41,25 @@ VALUES (default, 'ADMIN', '1234', '010-1111-1111', '서울'),
 
 select * from members;
 
-drop table members;
+--drop table members;
 
 /* 대출 기록 테이블 */
 CREATE TABLE loans (
-    loanID     INT AUTO_INCREMENT PRIMARY KEY,           -- 대출 ID
-    memberID   INT,                                      -- 회원 ID
-    bookID     INT,                                      -- 도서 ID
-    loanDate   DATE,                                     -- 대출일
-    returnDate DATE,                                     -- 반납일
-    FOREIGN KEY (memberID) REFERENCES members(memberID), -- 외래 키: 회원 ID
-    FOREIGN KEY (bookID) REFERENCES books(bookID)        -- 외래 키: 도서 ID
+    loanID     INT AUTO_INCREMENT PRIMARY KEY,                             -- 대출 ID
+    memberID   INT,                                                        -- 회원 ID
+    bookID     INT,                                                        -- 도서 ID
+    loanDate   DATE,                                                       -- 대출일
+    returnDate DATE,                                                       -- 반납일
+    FOREIGN KEY (memberID) REFERENCES members(memberID) ON DELETE CASCADE, -- 외래 키: 회원 ID
+    FOREIGN KEY (bookID) REFERENCES books(bookID) ON DELETE CASCADE        -- 외래 키: 도서 ID
 );
 
 desc loans;
 
+/* 대출 기록 테이블 - TestData */
+INSERT INTO loans (memberID, bookID, loanDate, returnDate)
+VALUES (3, 3, '2023-09-22', '2023-10-05');
 
 select * from loans;
 
-drop table loans;
+--drop table loans;

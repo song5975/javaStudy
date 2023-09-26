@@ -18,11 +18,10 @@ import javax.swing.border.EmptyBorder;
 public class LibraryMain extends JFrame {
 
     private JPanel contentPane;
-    private JTextField textFieldID;
-    private JTextField textFieldPassword;
+    private JTextField textFieldID, textFieldPassword;
     private JButton btnLogIn, btnCreateNew;
     
-    private String name;
+    private String name; // 현재 로그인한 사용자가 누구인지 확인하는 전역변수 name 
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -36,7 +35,6 @@ public class LibraryMain extends JFrame {
             }
         });
     }
-
     
     public LibraryMain() {
         setTitle("도 서 관");
@@ -44,11 +42,8 @@ public class LibraryMain extends JFrame {
         setSize(800, 600);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
         setContentPane(contentPane);
         contentPane.setLayout(null);
-        
-  
         
         JPanel pn1 = new JPanel();
         pn1.setBounds(0, 0, 786, 81);
@@ -117,10 +112,9 @@ public class LibraryMain extends JFrame {
                 boolean isValid = service.memberCheck(name, password);
                 
                 if (isValid) {
-                    // 모든 체크가 끝나면 로그인 완료.
                     
                     JOptionPane.showMessageDialog(null, name + "님 환영합니다.");
-                    System.out.println("LibraryMain: name = " + name);
+                    System.out.println("LibraryMain_Debug: name = " + name);
 
                     LibraryMenu libraryMenu = new LibraryMenu(name);
                     libraryMenu.setVisible(true);
@@ -130,7 +124,6 @@ public class LibraryMain extends JFrame {
                     JOptionPane.showMessageDialog(null, "이름 또는 비밀번호를 확인하세요.");
                 }
             }
-
         });
        
         // 회원가입 버튼
@@ -141,8 +134,6 @@ public class LibraryMain extends JFrame {
                 memberInput.setVisible(true);
             }
         });
-        
-        textFieldID.setText("강감찬");
-        textFieldPassword.setText("kang2222");
+
     }
 }
