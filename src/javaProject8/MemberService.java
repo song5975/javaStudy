@@ -1,4 +1,4 @@
-package jPractice;
+package javaProject8;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class MemberService {
         if (!contact.matches("\\d{3}-\\d{4}-\\d{4}")) {
             return false;
         }
-        if (dao.memberCheck(name, password)) {
+        if (dao.memberCheck(name, password)) { // 이미 존재하는 회원인 경우 false
             return false;
         }
         return true;
@@ -51,7 +51,6 @@ public class MemberService {
 
 	// 현재 사용자의 이름을 받아서 ID를 가져오는 메소드
 	public int getCurrentUserID(String name) {
-        System.out.println("MemberService_Debug: name = " + name);
 		int memberID = dao.getCurrentUserID(name);
 		
 		return memberID;
@@ -65,19 +64,12 @@ public class MemberService {
 
     // 회원 정보 수정 버튼(회원 테이블)
 	public boolean updateMember(int memberID, String newName, String newPassword, String newContact, String newAddress) {
-		
-    	System.out.println("update_debug: " + newName + newPassword + newContact + newAddress);
-		
 		boolean isValid = dao.updateMember(memberID, newName, newPassword, newContact, newAddress);
 		return isValid;
 	}
 
     // 회원 정보 삭제(회원 테이블)
 	public boolean deleteMember(int memberID) {
-//		MemberDAO memberDAO = new MemberDAO();
-		
-		System.out.println("Debug1 : " + memberID);
-		
         boolean isSuccess = dao.deleteMember(memberID);
 		return isSuccess;
 	}

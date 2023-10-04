@@ -1,4 +1,4 @@
-package jPractice;
+package javaProject8;
 
 import java.util.List;
 
@@ -11,20 +11,23 @@ public class BooksService {
         return vos;
     }
 
-    // 도서 개별 검색
+    // 도서 개별 검색(String)
     public List<BooksVO> searchBooks(String selectedColumn, String keyword) {
         BooksDAO dao = new BooksDAO();
         List<BooksVO> vos = dao.searchBooks(selectedColumn, keyword);
         return vos;
     }
+   
+    // 도서 개별 검색(boolean)
+    public List<BooksVO> searchBooksWithBoolean(String selectedColumn, boolean booleanKeyword) {
+    	BooksDAO dao = new BooksDAO();
+    	List<BooksVO> vos = dao.searchBooksWithBoolean(selectedColumn, booleanKeyword);
+    	return vos;
+    }
 
     // 대출 가능 여부가 true인 책을 대출을 하면 false로 바꿔주는 메소드
     public void availableControl(int bookID, boolean isAvailable) {
         BooksDAO dao = new BooksDAO();
-        
-        System.out.println("availableControl_bookID_Debug:" + bookID);
-        System.out.println("availableControl_isAvailable_Debug:" + isAvailable);
-        
         dao.availableControl(bookID, isAvailable);
     }
 

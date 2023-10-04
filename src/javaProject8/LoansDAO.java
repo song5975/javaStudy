@@ -1,4 +1,4 @@
-package jPractice;
+package javaProject8;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -48,9 +48,7 @@ public class LoansDAO {
             String sql = "INSERT INTO loans VALUES (default, ?, ?, ?, ?)";
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, memberID);
-            System.out.println("memberID " + memberID);
             pstmt.setInt(2, bookID);
-            System.out.println("bookID " + bookID);
             pstmt.setDate(3, loanDate);
             pstmt.setDate(4, returnDate);
             int rowsAffected = pstmt.executeUpdate();
@@ -77,8 +75,6 @@ public class LoansDAO {
 
     // 대출 기록 전체 조회
 	public List<LoansVO> showAllLoans(int memberID) {
-			System.out.println("LoansDAO: name = " + memberID);
-
 		
 	        Connection conn = null;
 	        PreparedStatement pstmt = null;
@@ -100,8 +96,7 @@ public class LoansDAO {
 	            	vo.setLoanDate(rs.getString("loanDate"));
 	                vo.setReturnDate(rs.getString("returnDate"));
 
-
-	                vos.add(vo); //
+	                vos.add(vo);
 	            }
 	        } catch (Exception e) {
 	            e.printStackTrace();
@@ -243,6 +238,45 @@ public class LoansDAO {
 	    }
 
 	    return vos;
+	}
+
+	// 회원 삭제 시 MemberID로 BookID 가져오기
+	public List<Integer> getBookIDsByMemberID(int memberID) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    List<Integer> bookIDs = new ArrayList<>();
+
+	    try {
+	        conn = DatabaseConnector.getConnection();
+	        String sql = "SELECT bookID FROM Loans WHERE memberID = ?";
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, memberID);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            int bookID = rs.getInt("bookID");
+	            bookIDs.add(bookID);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (pstmt != null) {
+	                pstmt.close();
+	            }
+	            if (conn != null) {
+	                conn.close();
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return bookIDs;
 	}
 
 }

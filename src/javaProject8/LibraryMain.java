@@ -1,4 +1,4 @@
-package jPractice;
+package javaProject8;
 
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -107,20 +107,18 @@ public class LibraryMain extends JFrame {
             	name = textFieldID.getText();
                 String password = textFieldPassword.getText();
                 
-                // MemberService 클래스에서 아이디, 비밀번호 검사
+                // MemberService 클래스에서 회원이 맞는지 검사
                 MemberService service = new MemberService();
                 boolean isValid = service.memberCheck(name, password);
                 
                 if (isValid) {
-                    
+                	// DB정보와 일치하는 경우
                     JOptionPane.showMessageDialog(null, name + "님 환영합니다.");
-                    System.out.println("LibraryMain_Debug: name = " + name);
-
                     LibraryMenu libraryMenu = new LibraryMenu(name);
+                    // 로그인 성공 후의 화면을 띄울 때 현재 접속자를 확인하기 위해 name을 같이 넘김
                     libraryMenu.setVisible(true);
-                    
                 } else {
-                    // DB정보와 일치하지 않는 경우 메시지 표시
+                    // DB정보와 일치하지 않는 경우
                     JOptionPane.showMessageDialog(null, "이름 또는 비밀번호를 확인하세요.");
                 }
             }

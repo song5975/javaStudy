@@ -1,4 +1,4 @@
-package jPractice;
+package javaProject8;
 
 import java.sql.Date;
 import java.util.List;
@@ -7,7 +7,6 @@ public class LoansService {
 
     // 접속자용 대출 조회
 	public List<LoansVO> showAllLoans(int memberID) {
-        System.out.println("LoansService: name = " + memberID);
 
 		LoansDAO dao = new LoansDAO();
         List<LoansVO> vos = dao.showAllLoans(memberID);
@@ -38,6 +37,12 @@ public class LoansService {
 	    LoansDAO dao = new LoansDAO();
 	    List<LoansVO> vos = dao.showAdminLoans();
 	    return vos;
+	}
+
+	// 회원 삭제 시 MemberID로 BookID 가져오기
+	public List<Integer> getBookIDsByMemberID(int memberID) {
+		LoansDAO loansDAO = new LoansDAO();
+		return loansDAO.getBookIDsByMemberID(memberID);
 	}
 	
 }

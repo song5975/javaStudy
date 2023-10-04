@@ -1,4 +1,4 @@
-package jPractice;
+package javaProject8;
 
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -166,26 +166,41 @@ public class AdminScreen extends JFrame {
         		String selectedColumn = (String) searchColumnComboBox.getSelectedItem();
         		String keyword = keywordField.getText();
         		
-//        		if (selectedColumn.equals("isAvailable")) {
-//        			boolean isAvailable = Boolean.parseBoolean(keyword);
-//        		}
-        		
-        		List<BooksVO> vos = booksService.searchBooks(selectedColumn, keyword);
-        		
-        		// 테이블 모델 초기화
-        		DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
-        		model.setRowCount(0); // 기존 데이터 모두 제거
-        		
-        		for (BooksVO vo : vos) {
-        			model.addRow(new Object[] {
-        					vo.getBookID(),
-        					vo.getTitle(),
-        					vo.getAuthor(),
-        					vo.getPublisher(),
-        					vo.getGenre(),
-        					vo.isAvailable()
-        			});
+        		if (selectedColumn.equals("isAvailable")) {
+        			boolean booleanKeyword = Boolean.parseBoolean(keyword);
+        			List<BooksVO> vos = booksService.searchBooksWithBoolean(selectedColumn, booleanKeyword);
+        			// 테이블 모델 초기화
+        			DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
+        			model.setRowCount(0); // 기존 데이터 모두 제거
+        			
+        			for (BooksVO vo : vos) {
+        				model.addRow(new Object[] {
+        						vo.getBookID(),
+        						vo.getTitle(),
+        						vo.getAuthor(),
+        						vo.getPublisher(),
+        						vo.getGenre(),
+        						vo.isAvailable()
+        				});
+        			}
+        		} else {
+        			List<BooksVO> vos = booksService.searchBooks(selectedColumn, keyword);
+        			// 테이블 모델 초기화
+        			DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
+        			model.setRowCount(0); // 기존 데이터 모두 제거
+        			
+        			for (BooksVO vo : vos) {
+        				model.addRow(new Object[] {
+        						vo.getBookID(),
+        						vo.getTitle(),
+        						vo.getAuthor(),
+        						vo.getPublisher(),
+        						vo.getGenre(),
+        						vo.isAvailable()
+        				});
+        			}
         		}
+        		
         	}
         });
         
@@ -332,21 +347,14 @@ public class AdminScreen extends JFrame {
                     String address = (String) memberTable.getValueAt(selectedRow, 4);
 
                     String newName = JOptionPane.showInputDialog("새 이름:", name);
-//                    String newName = name;
                     String newPassword = JOptionPane.showInputDialog("새 비밀번호:", password);
                     String newContact = JOptionPane.showInputDialog("새 연락처:", contact);
                     String newAddress = JOptionPane.showInputDialog("새 주소:", address);
                     
                     boolean isValid = memberService.newValidationCheck(newName, newPassword, newContact, newAddress);
 
-//                    boolean isValid = true;
-                    
     		        if (isValid) {
-    		        	
-    		        	System.out.println("update_debug: " + newName + newPassword + newContact + newAddress);
-
     		        	boolean isUpdated = memberService.updateMember(memberID, newName, newPassword, newContact, newAddress);
-    		            
     		            
     		            if (isUpdated) {
     		                JOptionPane.showMessageDialog(null, "수정이 완료되었습니다.", "회원수정 성공", JOptionPane.INFORMATION_MESSAGE);
@@ -356,7 +364,6 @@ public class AdminScreen extends JFrame {
     		        } else {
     		            JOptionPane.showMessageDialog(null, "입력 정보가 유효하지 않습니다.", "유효성 검사 실패", JOptionPane.ERROR_MESSAGE);
     		        }
-                    
                     
                 }
             }
@@ -373,7 +380,19 @@ public class AdminScreen extends JFrame {
                 	
                 	int confirm = JOptionPane.showConfirmDialog(null, "선택한 회원(대출 기록)를 삭제하시겠습니까?", "회원 삭제", JOptionPane.YES_NO_OPTION);
                 	 if (confirm == JOptionPane.YES_OPTION) {
-                         // 사용자가 확인을 눌렀을 때만 도서 삭제
+                		 // 회원 삭제 시 테이블의 cascade 옵션으로 대출 기록도 함께 삭제, 대출 기록 삭제 전에 isAvailable을 true로 바꿔줌
+                		 // 삭제할 회원이 빌린 책의 대출 가능 여부를 true로 바꿔줌(회원 탈퇴 시 책은 대출 가능하므로)
+                		 LoansService loansService = new LoansService();
+                		 List<Integer> deletedMembersLoanedBooks = loansService.getBookIDsByMemberID(memberID);
+                		 boolean loanedBookIsAvailable = false;
+                		 
+                		 // 삭제할 회원이 빌린 책이 여러 권인 경우 고려
+                		 BooksService booksService = new BooksService();
+                		 for (int bookID : deletedMembersLoanedBooks) {
+                		     booksService.availableControl(bookID, loanedBookIsAvailable);
+                		 }
+                		 
+                         // 사용자가 확인을 눌렀을 때만 회원 삭제
                 		 MemberService memberService = new MemberService();
                 		 boolean isSuccess = memberService.deleteMember(memberID);
 

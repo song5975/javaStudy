@@ -1,4 +1,4 @@
-package jPractice;
+package javaProject8;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -16,10 +16,11 @@ import javax.swing.border.EmptyBorder;
 public class LibraryMenu extends JFrame {
 
 	private JPanel contentPane;
-	private JButton btnForUsers, btnForAdmin, btnAccessorInfo;
+	private JButton btnForUsers, btnForAdmin, btnExit;
 	
 	private String name; // 현재 로그인한 사용자가 누구인지 확인하는 전역변수 name 
 
+	// LibraryMain에서 로그인 시 LibraryMenu를 띄웠으므로 main문 필요 없음
 //	public static void main(String[] args) {
 //		EventQueue.invokeLater(new Runnable() {
 //			public void run() {
@@ -36,8 +37,6 @@ public class LibraryMenu extends JFrame {
 
 	public LibraryMenu(String name) {
 		this.name = name;
-//		System.out.println("LibraryMenu_Debug: name = " + name);
-//		UserScreen userScreen = new UserScreen(name);
 		
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(800, 600);
@@ -72,10 +71,10 @@ public class LibraryMenu extends JFrame {
 		btnForAdmin.setBounds(457, 167, 183, 55);
 		pn2.add(btnForAdmin);
 		
-		btnAccessorInfo = new JButton("접속자 정보");
-		btnAccessorInfo.setFont(new Font("굴림", Font.PLAIN, 18));
-		btnAccessorInfo.setBounds(457, 278, 183, 55);
-		pn2.add(btnAccessorInfo);
+		btnExit = new JButton("종 료");
+		btnExit.setFont(new Font("굴림", Font.PLAIN, 18));
+		btnExit.setBounds(457, 278, 183, 55);
+		pn2.add(btnExit);
 		
 		JPanel pn3 = new JPanel();
 		pn3.setBounds(0, 482, 786, 81);
@@ -89,18 +88,17 @@ public class LibraryMenu extends JFrame {
 		// 사용자용 버튼
 		btnForUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-		        System.out.println("LibraryMenu_Debug: name = " + name);
 				UserScreen userScreen = new UserScreen(name);
 				userScreen.setVisible(true);
 			}
 		});
 		
-		// 관리자용 버튼
+		// 관리자용 버튼(개선점 : 2차 비밀번호 하드코딩, 환경 변수 혹은 외부 설정 파일을 사용하여 보완)
 		btnForAdmin.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        String secondPassword = JOptionPane.showInputDialog("2차 비밀번호를 입력하세요:");
-
+		        // showInputDialog에서는 사용자가 입력 없이 취소를 누르면 null값 반환
+		        // secondPassword != null를 통해서 NullPointerException 방지
 		        if (secondPassword != null && secondPassword.equals("1234")) {
 		            AdminScreen adminScreen = new AdminScreen();
 		            adminScreen.setVisible(true);
@@ -110,12 +108,10 @@ public class LibraryMenu extends JFrame {
 		    }
 		});
 		
-		// 접속자 버튼(삭제)
-		// 로그인 시에 사용자 이름을 객체로 계속 넘겨서 접속자를 확인가능하도록으로 수정함.
-		btnAccessorInfo.addActionListener(new ActionListener() {
+		// 종료 버튼
+		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				AccessorScreen accessorScreen = new AccessorScreen();
-//				accessorScreen.setVisible(true);
+				System.exit(0);
 			}
 		});
 		

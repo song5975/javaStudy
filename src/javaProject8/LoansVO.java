@@ -1,4 +1,4 @@
-package jPractice;
+package javaProject8;
 
 public class LoansVO {
 	private int loanID;

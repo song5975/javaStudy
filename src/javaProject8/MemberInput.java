@@ -1,4 +1,4 @@
-package jPractice;
+package javaProject8;
 
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -134,7 +134,7 @@ public class MemberInput extends JFrame {
 				String contact = textFieldNewPhoneNum.getText();
 				String address = textFieldNewAddress.getText();
 				
-				// MemberService에서 유효성 검사
+				// MemberService에서 신규회원의 정보 유효성 검사
 				MemberService service = new MemberService();
 				boolean isValid = service.validationCheck(name, password, contact, address);
 				

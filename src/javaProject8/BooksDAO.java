@@ -1,4 +1,4 @@
-package jPractice;
+package javaProject8;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -54,10 +54,6 @@ public class BooksDAO {
     
     // BooksService searchBooks에서 호출 받아 DB에서 개별 책 가져오기
     public List<BooksVO> searchBooks(String selectedColumn, String keyword) {
-    	
-    	System.out.println("searchButton_Debug :" + selectedColumn);
-		System.out.println("searchButton_Debug : " + keyword);
-    	
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -79,7 +75,50 @@ public class BooksDAO {
                 vo.setPublisher(rs.getString("publisher"));
                 vo.setGenre(rs.getString("genre"));
                 vo.setAvailable(rs.getBoolean("isAvailable"));
+                vos.add(vo);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return vos;
+    }
 
+    // BooksService searchBooksWithBoolean에서 호출 받아 DB에서 개별 책 가져오기(boolean)
+    public List<BooksVO> searchBooksWithBoolean(String selectedColumn, boolean booleanKeyword) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<BooksVO> vos = new ArrayList<>();
+        
+        try {
+            conn = DatabaseConnector.getConnection();
+            String sql = "SELECT * FROM books WHERE " + selectedColumn + " LIKE ?";            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setBoolean(1, booleanKeyword);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                BooksVO vo = new BooksVO();
+                vo.setBookID(rs.getInt("bookID"));
+                vo.setTitle(rs.getString("title"));
+                vo.setAuthor(rs.getString("author"));
+                vo.setPublisher(rs.getString("publisher"));
+                vo.setGenre(rs.getString("genre"));
+                vo.setAvailable(rs.getBoolean("isAvailable"));
                 vos.add(vo);
             }
         } catch (Exception e) {
@@ -111,10 +150,6 @@ public class BooksDAO {
             conn = DatabaseConnector.getConnection();
             String sql = "UPDATE books SET isAvailable = NOT ? WHERE bookID = ?";
             pstmt = conn.prepareStatement(sql);
-            
-            System.out.println("availableControl_DAO_bookID_Debug:" + bookID);
-            System.out.println("availableControl_DAO_isAvailable_Debug:" + isAvailable);
-            
             pstmt.setBoolean(1, isAvailable);
             pstmt.setInt(2, bookID);
 
@@ -215,4 +250,5 @@ public class BooksDAO {
             }
         }
     }
+
 }

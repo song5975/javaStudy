@@ -1,4 +1,4 @@
-package jPractice;
+package javaProject8;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -20,11 +20,11 @@ import javax.swing.table.DefaultTableModel;
 @SuppressWarnings("serial")
 public class UserScreen extends JFrame {
     private JPanel contentPane;
-    private JTable table;
-    private DefaultTableModel tableModel;
+    private JTable bookTable, loanTable;
+    private DefaultTableModel bookTableModel, loanTableModel;
     private JTextField keywordField;
     private JComboBox<String> searchColumnComboBox;
-    private JButton searchButton, showAllButton, btnLoans, btnReturn, btnBack, showMyLoans;
+    private JButton searchButton, showAllButton, btnLoans, showMyLoans, btnReturn, btnBack;
     
     private String name; // 현재 로그인한 사용자가 누구인지 확인하는 전역변수 name 
     
@@ -43,7 +43,6 @@ public class UserScreen extends JFrame {
 //    }
 
     public UserScreen(String name) {
-        System.out.println("UserScreen_Debug: name = " + name);
     	this.name = name;
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -70,16 +69,16 @@ public class UserScreen extends JFrame {
         contentPane.add(searchColumnComboBox);
 
         // (도서 테이블)
-        tableModel = new DefaultTableModel();
-        tableModel.addColumn("도서 ID");
-        tableModel.addColumn("도서 제목");
-        tableModel.addColumn("작가");
-        tableModel.addColumn("출판사");
-        tableModel.addColumn("장르");
-        tableModel.addColumn("대출 가능 여부");
+        bookTableModel = new DefaultTableModel();
+        bookTableModel.addColumn("도서 ID");
+        bookTableModel.addColumn("도서 제목");
+        bookTableModel.addColumn("작가");
+        bookTableModel.addColumn("출판사");
+        bookTableModel.addColumn("장르");
+        bookTableModel.addColumn("대출 가능 여부");
 
-        table = new JTable(tableModel);
-        JScrollPane scrollPane1 = new JScrollPane(table);
+        bookTable = new JTable(bookTableModel);
+        JScrollPane scrollPane1 = new JScrollPane(bookTable);
         scrollPane1.setBounds(12, 50, 762, 164);
         contentPane.add(scrollPane1);
 
@@ -100,14 +99,14 @@ public class UserScreen extends JFrame {
         contentPane.add(btnLoans);
 
         // (대출 테이블)
-        DefaultTableModel loanTableModel = new DefaultTableModel();
+        loanTableModel = new DefaultTableModel();
         loanTableModel.addColumn("대출 ID");
         loanTableModel.addColumn("회원 ID");
         loanTableModel.addColumn("도서 ID");
         loanTableModel.addColumn("대출일");
         loanTableModel.addColumn("반납일");
 
-        JTable loanTable = new JTable(loanTableModel);
+        loanTable = new JTable(loanTableModel);
         JScrollPane scrollPane2 = new JScrollPane(loanTable);
         scrollPane2.setBounds(12, 320, 762, 108);
         contentPane.add(scrollPane2);
@@ -139,26 +138,43 @@ public class UserScreen extends JFrame {
         		String selectedColumn = (String) searchColumnComboBox.getSelectedItem();
         		String keyword = keywordField.getText();
         		
-        		System.out.println("searchButton_Debug : " + selectedColumn);
-        		System.out.println("searchButton_Debug : " + keyword);
-        		
-        		List<BooksVO> vos = booksService.searchBooks(selectedColumn, keyword);
-        		
-        		// 테이블 모델 초기화
-        		DefaultTableModel model = (DefaultTableModel) table.getModel();
-        		model.setRowCount(0); // 기존 데이터 모두 제거
-        		
-        		// 검색 결과를 테이블에 추가
-        		for (BooksVO vo : vos) {
-        			model.addRow(new Object[] {
-        					vo.getBookID(),
-        					vo.getTitle(),
-        					vo.getAuthor(),
-        					vo.getPublisher(),
-        					vo.getGenre(),
-        					vo.isAvailable()
-        			});
+        		// 테이블의 isAvailable이 boolean 타입으로 되어있어서 문자열 검색 x
+        		// (개선점 : 와일드카드 문자인 '%', '_'는 문자열 검색, boolean 값은 적용 x, 다음에는 테이블 설계 시 String 사용)
+        		if (selectedColumn.equals("isAvailable")) {
+        			boolean booleanKeyword = Boolean.parseBoolean(keyword);
+        			List<BooksVO> vos = booksService.searchBooksWithBoolean(selectedColumn, booleanKeyword);
+        			// 테이블 모델 초기화
+        			DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
+        			model.setRowCount(0); // 기존 데이터 모두 제거
+        			
+        			for (BooksVO vo : vos) {
+        				model.addRow(new Object[] {
+        						vo.getBookID(),
+        						vo.getTitle(),
+        						vo.getAuthor(),
+        						vo.getPublisher(),
+        						vo.getGenre(),
+        						vo.isAvailable()
+        				});
+        			}
+        		} else {
+        			List<BooksVO> vos = booksService.searchBooks(selectedColumn, keyword);
+        			// 테이블 모델 초기화
+        			DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
+        			model.setRowCount(0); // 기존 데이터 모두 제거
+        			
+        			for (BooksVO vo : vos) {
+        				model.addRow(new Object[] {
+        						vo.getBookID(),
+        						vo.getTitle(),
+        						vo.getAuthor(),
+        						vo.getPublisher(),
+        						vo.getGenre(),
+        						vo.isAvailable()
+        				});
+        			}
         		}
+        		
         	}
         });
        
@@ -170,10 +186,9 @@ public class UserScreen extends JFrame {
         		List<BooksVO> vos = booksService.showAllBooks();
         		 
         		// 테이블 모델 초기화
-        	    DefaultTableModel model = (DefaultTableModel) table.getModel();
+        	    DefaultTableModel model = (DefaultTableModel) bookTable.getModel();
         	    model.setRowCount(0); // 기존 데이터 모두 제거
         		 
-        		// vos의 데이터를 테이블에 추가
         	        for (BooksVO vo : vos) {
         	            model.addRow(new Object[] {
         	                vo.getBookID(),
@@ -191,17 +206,13 @@ public class UserScreen extends JFrame {
         btnLoans.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = table.getSelectedRow();
+                int selectedRow = bookTable.getSelectedRow();
                 if (selectedRow != -1) {
-                    int bookID = (int) table.getValueAt(selectedRow, 0);
-                    boolean isAvailable = (boolean) table.getValueAt(selectedRow, 5);
+                    int bookID = (int) bookTable.getValueAt(selectedRow, 0);				// 도서 ID
+                    boolean isAvailable = (boolean) bookTable.getValueAt(selectedRow, 5);	// 대출 가능 여부
                     
                     if (isAvailable) {
                         BooksService booksService = new BooksService();
-                        
-                        System.out.println("대출버튼_bookID_Debug:" + bookID);
-                        System.out.println("대출버튼_isAvailable_Debug:" + isAvailable);
-                        
                         
                         // 대출 기록을 추가할 때 해당 도서의 isAvailable 값을 수정
                         booksService.availableControl(bookID, isAvailable);
@@ -213,11 +224,9 @@ public class UserScreen extends JFrame {
                         LoansService loansService = new LoansService();
                         MemberService memberService = new MemberService();
                         
-                        System.out.println("UserScreenButton_Debug: name = " + name);
                         int memberID = memberService.getCurrentUserID(name);
                         loansService.addNewLoans(memberID, bookID, loanDate, returnDate);
                         JOptionPane.showMessageDialog(null, "대출이 정상적으로 처리되었습니다.");
-                        
                     } else {
                         JOptionPane.showMessageDialog(null, "선택한 도서는 대출이 불가능합니다.", "알림", JOptionPane.WARNING_MESSAGE);
                     }
@@ -233,7 +242,6 @@ public class UserScreen extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				LoansService loansService = new LoansService();
 		        
-				System.out.println("showMyLoans_Debug: name = " + name);
                 MemberService memberService = new MemberService();
 		        int memberID = memberService.getCurrentUserID(name);
 

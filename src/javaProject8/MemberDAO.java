@@ -1,4 +1,4 @@
-package jPractice;
+package javaProject8;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,7 +25,7 @@ public class MemberDAO {
             pstmt.setString(2, password);
             rs = pstmt.executeQuery();
 
-            if (rs.next()) {
+            if (rs.next()) { // rs.next()가 true를 반환하면 DB에 일치하는 레코드가 존재 => isMember = true;
                 isMember = true;
             }
         } catch (SQLException e) {
@@ -91,7 +91,6 @@ public class MemberDAO {
 	        pstmt = conn.prepareStatement(sql);
 	        pstmt.setString(1, name);
 	        rs = pstmt.executeQuery();
-            System.out.println("MemberDAO: name = " + name);
 
 	        if (rs.next()) {
 	            return rs.getInt("memberID");
@@ -153,10 +152,6 @@ public class MemberDAO {
 
 	// 신규회원 추가
 	public boolean updateMember(int memberID, String newName, String newPassword, String newContact, String newAddress) {
-		
-    	System.out.println("update_debug: " + newName + newPassword + newContact + newAddress);
-
-		
 	    Connection conn = null;
 	    PreparedStatement pstmt = null;
 
@@ -195,8 +190,6 @@ public class MemberDAO {
 	public boolean deleteMember(int memberID) {
 	    Connection conn = null;
 	    PreparedStatement pstmt = null;
-
-		System.out.println("Debug1 : " + memberID);
 	    
 	    try {
 	        conn = DatabaseConnector.getConnection();
